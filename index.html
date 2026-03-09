@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>МАС «Снежинка» · API документация</title>
+    <title>МАС «Снежинка» · API Росатом</title>
     <!-- Font Awesome 6 (free) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Highlight.js темная тема (VS Code Dark+) -->
+    <!-- Highlight.js тёмная тема (VS Code Dark+) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
     <style>
-        /* Монохромная тёмная тема, минимализм */
+        /* Монохромная тёмная тема */
         * {
             margin: 0;
             padding: 0;
@@ -210,41 +210,45 @@
     <div class="container">
         <h1>
             <i class="fas fa-snowflake"></i> МАС «Снежинка» API
-            <span class="badge">v1.0</span>
+            <span class="badge">v1.0 / Росатом</span>
         </h1>
 
         <!-- Базовая информация -->
         <div class="grid-2" style="margin-bottom: 2rem;">
             <div class="kv">
-                <div class="kv-item"><span class="kv-key"><i class="fas fa-link"></i> Base URL</span><span class="kv-value">https://snowapi.github.io/</span></div>
-                <div class="kv-item"><span class="kv-key"><i class="fas fa-key"></i> Auth</span><span class="kv-value">Bearer &lt;API-ключ&gt;</span></div>
-                <div class="kv-item"><span class="kv-key"><i class="fas fa-tachometer-alt"></i> Лимиты</span><span class="kv-value">100 запр/день (бесплатно)</span></div>
+                <div class="kv-item"><span class="kv-key"><i class="fas fa-link"></i> Base URL</span><span class="kv-value">https://rosatom.snowapi.ru/</span></div>
+                <div class="kv-item"><span class="kv-key"><i class="fas fa-key"></i> Auth</span><span class="kv-value">Bearer &lt;API-ключ VK Play&gt;</span></div>
+                <div class="kv-item"><span class="kv-key"><i class="fas fa-tachometer-alt"></i> Бесплатный тариф</span><span class="kv-value">100 запр/день + 10 квантовых задач</span></div>
             </div>
             <div class="kv">
                 <div class="kv-item"><span class="kv-key"><i class="fas fa-code"></i> Формат</span><span class="kv-value">JSON</span></div>
                 <div class="kv-item"><span class="kv-key"><i class="fas fa-clock"></i> Асинхронные задачи</span><span class="kv-value">job_id + статус</span></div>
-                <div class="kv-item"><span class="kv-key"><i class="fas fa-shield-alt"></i> Платформа</span><span class="kv-value">VK Play</span></div>
+                <div class="kv-item"><span class="kv-key"><i class="fas fa-microchip"></i> Инфраструктура</span><span class="kv-value">Росатом / Christofari Neo</span></div>
             </div>
+        </div>
+
+        <!-- Архитектура: единый шлюз Росатома -->
+        <div class="note">
+            <i class="fas fa-atom" style="margin-right: 10px;"></i>
+            <strong>Единый вычислительный комплекс Росатома.</strong> Все запросы обрабатываются через суперкомпьютер <strong>Christofari Neo</strong>, объединяющий классические HPC и квантовые процессоры (ионные ловушки, квантовый отжиг, симуляторы). Доступ к квантовым ресурсам осуществляется через российские разработки в рамках импортонезависимого стека.
         </div>
 
         <!-- Аутентификация детально -->
         <div class="note">
             <i class="fas fa-exclamation-triangle" style="margin-right: 10px;"></i>
-            <strong>Аутентификация:</strong> все запросы должны содержать заголовок <code style="background:#2d3543; padding:2px 6px;">Authorization: Bearer &lt;ваш_ключ&gt;</code>. Ключ выдаётся в личном кабинете VK Play.
+            <strong>Аутентификация:</strong> все запросы должны содержать заголовок <code style="background:#2d3543; padding:2px 6px;">Authorization: Bearer &lt;ваш_ключ&gt;</code>. Ключ выдаётся в личном кабинете VK Play после подтверждения партнёрства с Росатомом.
         </div>
 
         <!-- 1. Биоинформатика -->
         <h2><i class="fas fa-dna"></i> 1. Биоинформатика</h2>
         <div class="endpoint-card">
             <span class="method">POST</span><span class="path">/bio/analyze</span>
-            <div class="description">Анализ биологических последовательностей (ДНК/РНК/белок).</div>
-            <h3>Параметры запроса (JSON)</h3>
+            <div class="description">Анализ биологических последовательностей (ДНК/РНК/белок). Выполняется на классических узлах Christofari Neo.</div>
             <pre><code class="language-json">{
   "sequence": "ATCGATCG...",
   "type": "dna | rna | protein",
   "tasks": ["gc_content", "molecular_weight", "secondary_structure"]
 }</code></pre>
-            <h3>Пример ответа</h3>
             <pre><code class="language-json">{
   "gc_content": 0.45,
   "molecular_weight": 12345.6,
@@ -256,7 +260,7 @@
         <h2><i class="fas fa-flask"></i> 2. Хемоинформатика</h2>
         <div class="endpoint-card">
             <span class="method">POST</span><span class="path">/chemo/process</span>
-            <div class="description">Работа с химическими соединениями (SMILES, дескрипторы, фингерпринты).</div>
+            <div class="description">Дескрипторы и фингерпринты молекул (SMILES).</div>
             <pre><code class="language-json">{
   "smiles": "CCO",
   "descriptors": ["logP", "TPSA", "HBD"],
@@ -279,7 +283,7 @@
         <h2><i class="fas fa-tree"></i> 3. Параметрические системы ветвления (L-Systems)</h2>
         <div class="endpoint-card">
             <span class="method">POST</span><span class="path">/lsystem/generate</span>
-            <div class="description">Генерация фрактальных структур по правилам L-систем.</div>
+            <div class="description">Генерация фракталов и структур растений.</div>
             <pre><code class="language-json">{
   "axiom": "A",
   "rules": { "A": "AB", "B": "A" },
@@ -298,7 +302,6 @@
         <h2><i class="fas fa-film"></i> 4. Стандартизированные шаблоны анимаций</h2>
         <div class="endpoint-card">
             <span class="method">GET</span><span class="path">/animations/templates</span>
-            <div class="description">Список доступных шаблонов.</div>
             <pre><code class="language-json">{
   "templates": [
     {"id": "dna_helix", "name": "ДНК-спираль", "format": "gltf"},
@@ -309,7 +312,7 @@
         </div>
         <div class="endpoint-card">
             <span class="method">POST</span><span class="path">/animations/render</span>
-            <div class="description">Запрос рендера анимации (асинхронно).</div>
+            <div class="description">Рендер на GPU-кластере Christofari Neo (асинхронно).</div>
             <pre><code class="language-json">{
   "template_id": "dna_helix",
   "parameters": {
@@ -320,7 +323,7 @@
   "output_format": "mp4"
 }</code></pre>
             <pre><code class="language-json">{
-  "job_id": "550e8400-e29b-41d4-a716-446655440000",
+  "job_id": "anim_550e8400",
   "status": "pending"
 }</code></pre>
         </div>
@@ -329,26 +332,105 @@
         <h2><i class="fas fa-protein"></i> 5. Фолдинг белков и ДНК</h2>
         <div class="endpoint-card">
             <span class="method">POST</span><span class="path">/folding/predict</span>
-            <div class="description">Предсказание 3D-структуры по последовательности (асинхронно).</div>
+            <div class="description">Предсказание 3D-структуры. При указании квантового провайдера задача направляется на соответствующий QPU Росатома.</div>
             <pre><code class="language-json">{
   "sequence": "MVLSPADKTNVKAAW...",
   "molecule_type": "protein",
-  "engine": "deepfold-plm",
-  "options": { "return_pdb": true, "return_confidence": true }
+  "engine": "auto | deepfold-plm | quantum_annealing | quantum_gate",
+  "quantum_provider": "rosatom_annealer | rosatom_ion | rosatom_neutral",
+  "options": {
+    "return_pdb": true,
+    "num_reads": 1000
+  }
 }</code></pre>
             <pre><code class="language-json">{
-  "job_id": "550e8400-e29b-41d4-a716-446655440000",
+  "job_id": "fold_550e8400",
   "status": "pending"
 }</code></pre>
         </div>
         <div class="endpoint-card">
             <span class="method">GET</span><span class="path">/folding/result/{job_id}</span>
-            <div class="description">Получение результата фолдинга.</div>
             <pre><code class="language-json">{
   "pdb": "ATOM      1  N   MET A   1     -5.123  2.456  1.789  1.00 15.23           N\n...",
   "confidence": [0.95, 0.87, ...],
-  "visualization_url": "https://snowapi.github.io/view/550e8400"
+  "visualization_url": "https://rosatom.snowapi.ru/view/fold_550e8400"
 }</code></pre>
+        </div>
+
+        <!-- 6. Квантовые вычисления (Росатом) -->
+        <h2><i class="fas fa-atom"></i> 6. Квантовые вычисления (инфраструктура Росатома)</h2>
+        <div class="note">
+            <i class="fas fa-microchip"></i> Доступны российские квантовые процессоры, разработанные в рамках дорожной карты «Квантовые вычисления». Поддерживаются аннилеры, ионные ловушки и нейтральные атомы.
+        </div>
+
+        <h3>Доступные технологии через провайдера <code>rosatom_*</code></h3>
+        <table class="param-table">
+            <thead><tr><th>Провайдер (значение)</th><th>Тип</th><th>Технология</th><th>Применение</th></tr></thead>
+            <tbody>
+                <tr><td><code>rosatom_annealer</code></td><td>Квантовый аннилер</td><td>Российский аналог D‑Wave (отжиг)</td><td>Оптимизация QUBO, отбор молекул</td></tr>
+                <tr><td><code>rosatom_ion</code></td><td>Вентильный (ионная ловушка)</td><td>50+ физических кубитов, точность 99.7%</td><td>Точный докинг (QAOA), квантовая химия</td></tr>
+                <tr><td><code>rosatom_neutral</code></td><td>Вентильный (нейтральные атомы)</td><td>Массивы атомов (опытные образцы)</td><td>Материаловедение, симуляция решёток</td></tr>
+                <tr><td><code>rosatom_sim</code></td><td>Симулятор</td><td>Классический эмулятор на CPU/GPU</td><td>Отладка и тестирование (бесплатно)</td></tr>
+            </tbody>
+        </table>
+
+        <div class="endpoint-card">
+            <span class="method">POST</span><span class="path">/quantum/optimize</span>
+            <div class="description">Многокритериальная оптимизация (QUBO) на квантовом аннилере Росатома.</div>
+            <pre><code class="language-json">{
+  "provider": "rosatom_annealer",
+  "problem_type": "qubo",
+  "qubo": {
+    "linear": {"0": -1, "1": -2},
+    "quadratic": {"0,1": 3}
+  },
+  "params": {
+    "num_reads": 1000,
+    "annealing_time": 20
+  }
+}</code></pre>
+            <pre><code class="language-json">{
+  "job_id": "qopt_550e8400",
+  "status": "pending"
+}</code></pre>
+        </div>
+
+        <div class="endpoint-card">
+            <span class="method">POST</span><span class="path">/quantum/docking</span>
+            <div class="description">Молекулярный докинг с использованием гибридного алгоритма QAOA на ионной ловушке.</div>
+            <pre><code class="language-json">{
+  "provider": "rosatom_ion",
+  "molecule_smiles": "CCO",
+  "target_pdb": "3ERT",
+  "options": {
+    "hybrid_jobs": true,
+    "classical_instances": "ml.m5.xlarge"
+  }
+}</code></pre>
+        </div>
+
+        <div class="endpoint-card">
+            <span class="method">POST</span><span class="path">/quantum/chemistry</span>
+            <div class="description">Симуляция электронной структуры (VQE) на вентильном процессоре.</div>
+            <pre><code class="language-json">{
+  "provider": "rosatom_ion",
+  "system": "ferrocene",
+  "method": "vqe",
+  "basis_set": "sto-3g"
+}</code></pre>
+        </div>
+
+        <!-- Цены и лимиты -->
+        <h2><i class="fas fa-chart-line"></i> Стоимость и лимиты</h2>
+        <div class="note">
+            <p><strong>Бесплатный тариф (ознакомительный):</strong></p>
+            <ul style="margin-left: 1.5rem;">
+                <li>100 классических запросов в день (био, хемо, L‑системы, анимации).</li>
+                <li>10 квантовых задач в сутки (суммарно на всех провайдерах).</li>
+                <li>Неограниченное использование симулятора <code>rosatom_sim</code>.</li>
+            </ul>
+            <p><strong>Коммерческое использование:</strong> цены рассчитываются индивидуально в зависимости от типа QPU, длительности сессии и количества запусков. Для получения коммерческого предложения обратитесь к менеджерам Госкорпорации «Росатом» через личный кабинет VK Play.</p>
+            <p><i class="fas fa-info-circle"></i> Все квантовые задачи выполняются на реальном российском оборудовании, развёрнутом в Национальной квантовой лаборатории (Росатом).</p>
         </div>
 
         <!-- Коды ошибок -->
@@ -366,28 +448,34 @@
             </div>
         </div>
 
-        <!-- Пример cURL -->
-        <h2><i class="fas fa-terminal"></i> Пример использования cURL</h2>
+        <!-- Примеры cURL -->
+        <h2><i class="fas fa-terminal"></i> Примеры cURL (через шлюз Росатома)</h2>
         <div class="endpoint-card">
-            <pre><code class="language-bash"># Получить список шаблонов анимаций
+            <pre><code class="language-bash"># Получить шаблоны анимаций
 curl -H "Authorization: Bearer YOUR_API_KEY" \
-     https://snowapi.github.io/animations/templates
+     https://rosatom.snowapi.ru/animations/templates
 
-# Запустить фолдинг белка
+# Запустить фолдинг с квантовым отжигом (российский аннилер)
 curl -X POST -H "Authorization: Bearer YOUR_API_KEY" \
      -H "Content-Type: application/json" \
-     -d '{"sequence":"MVLSPADKTNVKAAW...","molecule_type":"protein"}' \
-     https://snowapi.github.io/folding/predict</code></pre>
-        </div>
+     -d '{
+         "sequence": "MVLSPADKTNVKAAW...",
+         "molecule_type": "protein",
+         "engine": "quantum_annealing",
+         "quantum_provider": "rosatom_annealer"
+     }' \
+     https://rosatom.snowapi.ru/folding/predict
 
-        <!-- Лимиты и квоты -->
-        <h2><i class="fas fa-chart-line"></i> Лимиты и квоты</h2>
-        <div class="note">
-            <ul style="margin-left: 1.5rem; color: #b8c2d6;">
-                <li><strong>Бесплатный тариф:</strong> 100 запросов в день, 1 запрос в секунду.</li>
-                <li><strong>Платные тарифы:</strong> доступны в VK Play Developer Console.</li>
-                <li>Лимиты рассчитываются отдельно для каждого эндпоинта (асинхронные задачи считаются только при запуске).</li>
-            </ul>
+# Оптимизация QUBO на аннилере
+curl -X POST -H "Authorization: Bearer YOUR_API_KEY" \
+     -H "Content-Type: application/json" \
+     -d '{
+         "provider": "rosatom_annealer",
+         "problem_type": "qubo",
+         "qubo": {"linear":{"0":-1,"1":-2},"quadratic":{"0,1":3}},
+         "params": {"num_reads": 1000}
+     }' \
+     https://rosatom.snowapi.ru/quantum/optimize</code></pre>
         </div>
 
         <!-- Поддержка -->
@@ -397,9 +485,9 @@ curl -X POST -H "Authorization: Bearer YOUR_API_KEY" \
                 <a href="https://vkplay.ru/support">Служба поддержки VK Play</a>
                 <span style="margin:0 15px;">|</span>
                 <i class="fas fa-github"></i>
-                <a href="https://github.com/snowapi/snowapi.github.io/">GitHub</a>
+                <a href="https://github.com/snowapi/snowapi">GitHub</a>
             </div>
-            <div>© 2026 МАС «Снежинка»</div>
+            <div>© 2026 МАС «Снежинка» / Госкорпорация «Росатом»</div>
         </div>
     </div>
 
@@ -407,4 +495,4 @@ curl -X POST -H "Authorization: Bearer YOUR_API_KEY" \
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script>hljs.highlightAll();</script>
 </body>
-</html>
+    </html>
