@@ -1,1 +1,1 @@
-# snowapi.github.io
+# Snow API
