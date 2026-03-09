@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>МАС «Снежинка» · API документация</title>
+    <!-- Font Awesome 6 (free) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Highlight.js темная тема (VS Code Dark+) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+    <style>
+        /* Монохромная тёмная тема, минимализм */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #0d0f14;
+            font-family: 'Courier New', Courier, monospace;
+            color: #e4e4e4;
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #1a1c22;
+            border: 1px solid #2f333d;
+            border-radius: 2rem;
+            padding: 2.5rem 2rem;
+        }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 400;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-bottom: 1px solid #2f333d;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+        h1 i {
+            color: #b0b0b0;
+        }
+        .badge {
+            background: #2a2e38;
+            border: 1px solid #4b5263;
+            color: #ccc;
+            font-size: 0.9rem;
+            padding: 0.3rem 1.2rem;
+            border-radius: 30px;
+            margin-left: 1rem;
+        }
+        h2 {
+            font-size: 1.8rem;
+            font-weight: 400;
+            margin: 2rem 0 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            border-left: 4px solid #6b7a8f;
+            padding-left: 1rem;
+        }
+        h2 i {
+            color: #9aa9b9;
+        }
+        h3 {
+            font-size: 1.3rem;
+            font-weight: 400;
+            margin: 1.5rem 0 0.8rem;
+            color: #cfd7e6;
+        }
+        .endpoint-card {
+            background: #15181f;
+            border: 1px solid #2e3440;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .method {
+            display: inline-block;
+            background: #2e3a4a;
+            color: #bcd6ff;
+            font-weight: 600;
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            margin-right: 1rem;
+            letter-spacing: 0.5px;
+        }
+        .path {
+            font-family: monospace;
+            font-size: 1.2rem;
+            color: #e0e0e0;
+        }
+        .description {
+            margin: 1rem 0 0.5rem;
+            color: #aab3c4;
+        }
+        .param-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: #1e222b;
+            border-radius: 1rem;
+            overflow: hidden;
+            font-size: 0.95rem;
+        }
+        .param-table th {
+            text-align: left;
+            padding: 0.7rem 1rem;
+            background: #282e3a;
+            font-weight: 400;
+            color: #ccd7f0;
+            border-bottom: 1px solid #3e4555;
+        }
+        .param-table td {
+            padding: 0.7rem 1rem;
+            border-bottom: 1px solid #2d3340;
+            color: #bcc3d2;
+        }
+        .param-table tr:last-child td {
+            border-bottom: none;
+        }
+        .code-block {
+            background: #1e222b;
+            border-radius: 1rem;
+            margin: 1.2rem 0;
+        }
+        pre {
+            margin: 0;
+            padding: 1.2rem;
+            overflow-x: auto;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .hljs {
+            background: #1e222b;
+            padding: 0;
+        }
+        .note {
+            background: #20242e;
+            border-left: 4px solid #6f7c91;
+            padding: 1rem 1.5rem;
+            border-radius: 1rem;
+            margin: 1.5rem 0;
+            color: #b8c2d6;
+        }
+        .footer {
+            margin-top: 3rem;
+            border-top: 1px solid #2f333d;
+            padding-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #8892a6;
+        }
+        .footer a {
+            color: #b7c3da;
+            text-decoration: none;
+            border-bottom: 1px dotted #4f5b70;
+        }
+        .footer a:hover {
+            color: white;
+            border-bottom-color: #aaa;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .kv {
+            background: #15181f;
+            border: 1px solid #2e3440;
+            border-radius: 1rem;
+            padding: 1rem;
+        }
+        .kv-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px dashed #2f384b;
+        }
+        .kv-item:last-child {
+            border-bottom: none;
+        }
+        .kv-key {
+            color: #9aaec9;
+        }
+        .kv-value {
+            color: #e1e7f5;
+            font-weight: 500;
+        }
+        i {
+            color: #a1b1cd;
+        }
+        @media (max-width: 700px) {
+            .container { padding: 1.5rem; }
+            h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>
+            <i class="fas fa-snowflake"></i> МАС «Снежинка» API
+            <span class="badge">v1.0</span>
+        </h1>
+
+        <!-- Базовая информация -->
+        <div class="grid-2" style="margin-bottom: 2rem;">
+            <div class="kv">
+                <div class="kv-item"><span class="kv-key"><i class="fas fa-link"></i> Base URL</span><span class="kv-value">https://snowapi.github.io/</span></div>
+                <div class="kv-item"><span class="kv-key"><i class="fas fa-key"></i> Auth</span><span class="kv-value">Bearer &lt;API-ключ&gt;</span></div>
+                <div class="kv-item"><span class="kv-key"><i class="fas fa-tachometer-alt"></i> Лимиты</span><span class="kv-value">100 запр/день (бесплатно)</span></div>
+            </div>
+            <div class="kv">
+                <div class="kv-item"><span class="kv-key"><i class="fas fa-code"></i> Формат</span><span class="kv-value">JSON</span></div>
+                <div class="kv-item"><span class="kv-key"><i class="fas fa-clock"></i> Асинхронные задачи</span><span class="kv-value">job_id + статус</span></div>
+                <div class="kv-item"><span class="kv-key"><i class="fas fa-shield-alt"></i> Платформа</span><span class="kv-value">VK Play</span></div>
+            </div>
+        </div>
+
+        <!-- Аутентификация детально -->
+        <div class="note">
+            <i class="fas fa-exclamation-triangle" style="margin-right: 10px;"></i>
+            <strong>Аутентификация:</strong> все запросы должны содержать заголовок <code style="background:#2d3543; padding:2px 6px;">Authorization: Bearer &lt;ваш_ключ&gt;</code>. Ключ выдаётся в личном кабинете VK Play.
+        </div>
+
+        <!-- 1. Биоинформатика -->
+        <h2><i class="fas fa-dna"></i> 1. Биоинформатика</h2>
+        <div class="endpoint-card">
+            <span class="method">POST</span><span class="path">/bio/analyze</span>
+            <div class="description">Анализ биологических последовательностей (ДНК/РНК/белок).</div>
+            <h3>Параметры запроса (JSON)</h3>
+            <pre><code class="language-json">{
+  "sequence": "ATCGATCG...",
+  "type": "dna | rna | protein",
+  "tasks": ["gc_content", "molecular_weight", "secondary_structure"]
+}</code></pre>
+            <h3>Пример ответа</h3>
+            <pre><code class="language-json">{
+  "gc_content": 0.45,
+  "molecular_weight": 12345.6,
+  "secondary_structure": "hairpin"
+}</code></pre>
+        </div>
+
+        <!-- 2. Хемоинформатика -->
+        <h2><i class="fas fa-flask"></i> 2. Хемоинформатика</h2>
+        <div class="endpoint-card">
+            <span class="method">POST</span><span class="path">/chemo/process</span>
+            <div class="description">Работа с химическими соединениями (SMILES, дескрипторы, фингерпринты).</div>
+            <pre><code class="language-json">{
+  "smiles": "CCO",
+  "descriptors": ["logP", "TPSA", "HBD"],
+  "fingerprints": ["morgan", "maccs"]
+}</code></pre>
+            <pre><code class="language-json">{
+  "descriptors": {
+    "logP": 0.37,
+    "TPSA": 20.23,
+    "HBD": 1
+  },
+  "fingerprints": {
+    "morgan": "101010...",
+    "maccs": "110011..."
+  }
+}</code></pre>
+        </div>
+
+        <!-- 3. L-Systems -->
+        <h2><i class="fas fa-tree"></i> 3. Параметрические системы ветвления (L-Systems)</h2>
+        <div class="endpoint-card">
+            <span class="method">POST</span><span class="path">/lsystem/generate</span>
+            <div class="description">Генерация фрактальных структур по правилам L-систем.</div>
+            <pre><code class="language-json">{
+  "axiom": "A",
+  "rules": { "A": "AB", "B": "A" },
+  "iterations": 5,
+  "angle": 25.7,
+  "parameters": { "length": 10, "width": 1.5 }
+}</code></pre>
+            <pre><code class="language-json">{
+  "lsystem_string": "ABAABABA...",
+  "turtle_commands": ["F", "+", "F", "-", ...],
+  "svg": "data:image/svg+xml;base64,..."
+}</code></pre>
+        </div>
+
+        <!-- 4. Анимации -->
+        <h2><i class="fas fa-film"></i> 4. Стандартизированные шаблоны анимаций</h2>
+        <div class="endpoint-card">
+            <span class="method">GET</span><span class="path">/animations/templates</span>
+            <div class="description">Список доступных шаблонов.</div>
+            <pre><code class="language-json">{
+  "templates": [
+    {"id": "dna_helix", "name": "ДНК-спираль", "format": "gltf"},
+    {"id": "protein_fold", "name": "Сворачивание белка", "format": "usd"},
+    {"id": "atom_orbitals", "name": "Атомные орбитали", "format": "gltf"}
+  ]
+}</code></pre>
+        </div>
+        <div class="endpoint-card">
+            <span class="method">POST</span><span class="path">/animations/render</span>
+            <div class="description">Запрос рендера анимации (асинхронно).</div>
+            <pre><code class="language-json">{
+  "template_id": "dna_helix",
+  "parameters": {
+    "sequence": "ATCG",
+    "rotation_speed": 0.5,
+    "color_scheme": "rainbow"
+  },
+  "output_format": "mp4"
+}</code></pre>
+            <pre><code class="language-json">{
+  "job_id": "550e8400-e29b-41d4-a716-446655440000",
+  "status": "pending"
+}</code></pre>
+        </div>
+
+        <!-- 5. Фолдинг -->
+        <h2><i class="fas fa-protein"></i> 5. Фолдинг белков и ДНК</h2>
+        <div class="endpoint-card">
+            <span class="method">POST</span><span class="path">/folding/predict</span>
+            <div class="description">Предсказание 3D-структуры по последовательности (асинхронно).</div>
+            <pre><code class="language-json">{
+  "sequence": "MVLSPADKTNVKAAW...",
+  "molecule_type": "protein",
+  "engine": "deepfold-plm",
+  "options": { "return_pdb": true, "return_confidence": true }
+}</code></pre>
+            <pre><code class="language-json">{
+  "job_id": "550e8400-e29b-41d4-a716-446655440000",
+  "status": "pending"
+}</code></pre>
+        </div>
+        <div class="endpoint-card">
+            <span class="method">GET</span><span class="path">/folding/result/{job_id}</span>
+            <div class="description">Получение результата фолдинга.</div>
+            <pre><code class="language-json">{
+  "pdb": "ATOM      1  N   MET A   1     -5.123  2.456  1.789  1.00 15.23           N\n...",
+  "confidence": [0.95, 0.87, ...],
+  "visualization_url": "https://snowapi.github.io/view/550e8400"
+}</code></pre>
+        </div>
+
+        <!-- Коды ошибок -->
+        <h2><i class="fas fa-exclamation-circle"></i> Коды ошибок</h2>
+        <div class="grid-2" style="margin-bottom: 2rem;">
+            <div class="kv">
+                <div class="kv-item"><span class="kv-key">400</span><span class="kv-value">Неверный запрос</span></div>
+                <div class="kv-item"><span class="kv-key">401</span><span class="kv-value">Недействительный API-ключ</span></div>
+                <div class="kv-item"><span class="kv-key">403</span><span class="kv-value">Доступ запрещён</span></div>
+            </div>
+            <div class="kv">
+                <div class="kv-item"><span class="kv-key">404</span><span class="kv-value">Ресурс не найден</span></div>
+                <div class="kv-item"><span class="kv-key">429</span><span class="kv-value">Превышен лимит запросов</span></div>
+                <div class="kv-item"><span class="kv-key">500</span><span class="kv-value">Внутренняя ошибка</span></div>
+            </div>
+        </div>
+
+        <!-- Пример cURL -->
+        <h2><i class="fas fa-terminal"></i> Пример использования cURL</h2>
+        <div class="endpoint-card">
+            <pre><code class="language-bash"># Получить список шаблонов анимаций
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+     https://snowapi.github.io/animations/templates
+
+# Запустить фолдинг белка
+curl -X POST -H "Authorization: Bearer YOUR_API_KEY" \
+     -H "Content-Type: application/json" \
+     -d '{"sequence":"MVLSPADKTNVKAAW...","molecule_type":"protein"}' \
+     https://snowapi.github.io/folding/predict</code></pre>
+        </div>
+
+        <!-- Лимиты и квоты -->
+        <h2><i class="fas fa-chart-line"></i> Лимиты и квоты</h2>
+        <div class="note">
+            <ul style="margin-left: 1.5rem; color: #b8c2d6;">
+                <li><strong>Бесплатный тариф:</strong> 100 запросов в день, 1 запрос в секунду.</li>
+                <li><strong>Платные тарифы:</strong> доступны в VK Play Developer Console.</li>
+                <li>Лимиты рассчитываются отдельно для каждого эндпоинта (асинхронные задачи считаются только при запуске).</li>
+            </ul>
+        </div>
+
+        <!-- Поддержка -->
+        <div class="footer">
+            <div>
+                <i class="fas fa-headset"></i>
+                <a href="https://vkplay.ru/support">Служба поддержки VK Play</a>
+                <span style="margin:0 15px;">|</span>
+                <i class="fas fa-github"></i>
+                <a href="https://github.com/snowapi/snowapi">GitHub</a>
+            </div>
+            <div>© 2026 МАС «Снежинка»</div>
+        </div>
+    </div>
+
+    <!-- Подсветка синтаксиса -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</body>
+</html>
