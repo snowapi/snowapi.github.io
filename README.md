@@ -419,11 +419,11 @@ curl -X POST -H "Authorization: Bearer YOUR_API_KEY" \
 
 7. Поддержка
 
-· Технические вопросы: support@christofari-neo.snowapi.ru
-· Биллинг и квоты VK Play: https://vkplay.ru/support
+· Технические вопросы: support@christofari-neo.snowapi.ru <br>
+· Биллинг и квоты VK Play: https://vkplay.ru/support <br>
 · GitHub (open source): https://github.com/snowapi/snowapi
 
 ---
 
-© 2026 МАС «Снежинка» / Госкорпорация «Росатом» / ПАО «Сбер»
+© 2026 МАС «Снежинка» / Госкорпорация «Росатом» / ПАО «Сбер» <br>
 Версия документации: 2.0 (09.03.2026)
