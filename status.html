@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snow API · статус сервера</title>
+    <!-- Font Awesome 6 (free) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Монохромная тёмная тема */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #0d0f14;
+            font-family: 'Courier New', Courier, monospace;
+            color: #e4e4e4;
+            line-height: 1.5;
+            padding: 2rem 1rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background: #1a1c22;
+            border: 1px solid #2f333d;
+            border-radius: 2rem;
+            padding: 2.5rem 2rem;
+        }
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 400;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-bottom: 1px solid #2f333d;
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        h1 i {
+            color: #b0b0b0;
+        }
+        .badge {
+            background: #2a2e38;
+            border: 1px solid #4b5263;
+            color: #ccc;
+            font-size: 0.9rem;
+            padding: 0.3rem 1.2rem;
+            border-radius: 30px;
+            margin-left: 1rem;
+        }
+        .gateway-info {
+            background: #20242e;
+            border-left: 4px solid #6f7c91;
+            padding: 1rem 1.5rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .gateway-info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .gateway-info-item i {
+            width: 1.6rem;
+            color: #9aa9b9;
+        }
+        .label {
+            color: #9aaec9;
+            margin-right: 0.5rem;
+        }
+        .value {
+            color: #e1e7f5;
+            font-weight: 500;
+        }
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        .status-card {
+            background: #15181f;
+            border: 1px solid #2e3440;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .card-header i {
+            font-size: 1.8rem;
+            color: #b7c3da;
+        }
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 500;
+        }
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-left: auto;
+        }
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .dot.online { background: #5f9ea0; box-shadow: 0 0 8px #5f9ea0; }
+        .dot.degraded { background: #c9a45f; box-shadow: 0 0 8px #c9a45f; }
+        .dot.offline { background: #a05f5f; box-shadow: 0 0 8px #a05f5f; }
+        .status-text {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .card-desc {
+            color: #aab3c4;
+            font-size: 0.9rem;
+            border-top: 1px dashed #2f384b;
+            padding-top: 0.8rem;
+            margin-top: 0.2rem;
+        }
+        .uptime {
+            font-size: 0.85rem;
+            color: #8892a6;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .uptime i {
+            font-size: 0.9rem;
+        }
+        .last-updated {
+            text-align: right;
+            color: #6b7a8f;
+            font-size: 0.85rem;
+            margin-top: 2rem;
+            border-top: 1px solid #2f333d;
+            padding-top: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .footer {
+            margin-top: 2rem;
+            text-align: center;
+            color: #5f6a7c;
+            font-size: 0.85rem;
+        }
+        .footer a {
+            color: #b7c3da;
+            text-decoration: none;
+            border-bottom: 1px dotted #4f5b70;
+        }
+        .footer a:hover {
+            color: white;
+            border-bottom-color: #aaa;
+        }
+        @media (max-width: 600px) {
+            .container { padding: 1.5rem; }
+            h1 { font-size: 1.8rem; }
+            .gateway-info { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>
+            <i class="fas fa-snowflake"></i> Snow API · статус сервера
+            <span class="badge">v2.0</span>
+        </h1>
+
+        <!-- информация о шлюзе -->
+        <div class="gateway-info">
+            <div class="gateway-info-item">
+                <i class="fas fa-server"></i>
+                <span class="label">gateway</span>
+                <span class="value">christofari-neo.snowapi.ru</span>
+            </div>
+            <div class="gateway-info-item">
+                <i class="fas fa-clock"></i>
+                <span class="label">время</span>
+                <span class="value" id="current-time">2026-03-10 15:30 UTC</span>
+            </div>
+            <div class="gateway-info-item">
+                <i class="fas fa-tachometer-alt"></i>
+                <span class="label">нагрузка</span>
+                <span class="value">23%</span>
+            </div>
+        </div>
+
+        <!-- сетка статусов модулей -->
+        <div class="status-grid">
+            <!-- bio-ml -->
+            <div class="status-card">
+                <div class="card-header">
+                    <i class="fas fa-dna"></i>
+                    <span class="card-title">bio‑ml</span>
+                    <div class="status-indicator">
+                        <span class="dot online"></span>
+                        <span class="status-text">online</span>
+                    </div>
+                </div>
+                <div class="card-desc">
+                    DeepFold‑PLM · DeepMol · nanoGPT‑Bio
+                </div>
+                <div class="uptime">
+                    <i class="fas fa-arrow-up"></i> uptime 14d · 124ms
+                </div>
+            </div>
+
+            <!-- plant -->
+            <div class="status-card">
+                <div class="card-header">
+                    <i class="fas fa-seedling"></i>
+                    <span class="card-title">plant</span>
+                    <div class="status-indicator">
+                        <span class="dot online"></span>
+                        <span class="status-text">online</span>
+                    </div>
+                </div>
+                <div class="card-desc">
+                    DeepPlant · OpenAlea · L‑systems
+                </div>
+                <div class="uptime">
+                    <i class="fas fa-arrow-up"></i> uptime 7d · 98ms
+                </div>
+            </div>
+
+            <!-- rosetta -->
+            <div class="status-card">
+                <div class="card-header">
+                    <i class="fas fa-protein"></i>
+                    <span class="card-title">rosetta</span>
+                    <div class="status-indicator">
+                        <span class="dot online"></span>
+                        <span class="status-text">online</span>
+                    </div>
+                </div>
+                <div class="card-desc">
+                    Rosetta · фолдинг · дизайн · скоринг
+                </div>
+                <div class="uptime">
+                    <i class="fas fa-arrow-up"></i> uptime 30d · 350ms
+                </div>
+            </div>
+
+            <!-- animation -->
+            <div class="status-card">
+                <div class="card-header">
+                    <i class="fas fa-film"></i>
+                    <span class="card-title">animation</span>
+                    <div class="status-indicator">
+                        <span class="dot online"></span>
+                        <span class="status-text">online</span>
+                    </div>
+                </div>
+                <div class="card-desc">
+                    Science in Motion · рендер · атомарные анимации
+                </div>
+                <div class="uptime">
+                    <i class="fas fa-arrow-up"></i> uptime 5d · 210ms
+                </div>
+            </div>
+
+            <!-- autoresearch -->
+            <div class="status-card">
+                <div class="card-header">
+                    <i class="fas fa-robot"></i>
+                    <span class="card-title">autoresearch</span>
+                    <div class="status-indicator">
+                        <span class="dot online"></span>
+                        <span class="status-text">online</span>
+                    </div>
+                </div>
+                <div class="card-desc">
+                    ИИ‑исследователь · автономные эксперименты
+                </div>
+                <div class="uptime">
+                    <i class="fas fa-arrow-up"></i> uptime 2d · 560ms
+                </div>
+            </div>
+
+            <!-- quantum (Росатом) – внешний сервис -->
+            <div class="status-card">
+                <div class="card-header">
+                    <i class="fas fa-atom"></i>
+                    <span class="card-title">quantum</span>
+                    <div class="status-indicator">
+                        <span class="dot online"></span>
+                        <span class="status-text">online</span>
+                    </div>
+                </div>
+                <div class="card-desc">
+                    Росатом · QPU · аннилер · ионные ловушки
+                </div>
+                <div class="uptime">
+                    <i class="fas fa-arrow-up"></i> доступ 100% · 1.2s
+                </div>
+            </div>
+        </div>
+
+        <!-- дополнительная информация о внешних API -->
+        <div style="background: #20242e; border-radius: 1rem; padding: 1rem 1.5rem; margin-top: 1rem;">
+            <div style="display: flex; gap: 2rem; flex-wrap: wrap; align-items: center;">
+                <span><i class="fas fa-check-circle" style="color: #5f9ea0;"></i> VK Play API: активен</span>
+                <span><i class="fas fa-check-circle" style="color: #5f9ea0;"></i> DeepFold‑PLM public API: 214ms</span>
+                <span><i class="fas fa-exclamation-triangle" style="color: #c9a45f;"></i> Росатом резерв: hot standby</span>
+            </div>
+        </div>
+
+        <!-- время последнего обновления -->
+        <div class="last-updated">
+            <span><i class="far fa-clock"></i> обновлено: 10 марта 2026, 15:30:22 UTC</span>
+            <span><i class="fas fa-sync-alt"></i> интервал 30с</span>
+        </div>
+
+        <!-- футер с ссылками -->
+        <div class="footer">
+            <i class="fas fa-github"></i> <a href="https://github.com/snowapi/snowapi">snowapi/snowapi</a> · 
+            <a href="https://snowapi.github.io/">документация</a> · 
+            <a href="https://vkplay.ru/">VK Play</a>
+        </div>
+    </div>
+
+    <!-- маленький скрипт для динамического времени (необязательно) -->
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const formatted = now.toISOString().slice(0,10).replace(/-/g,'-') + ' ' + 
+                             now.getUTCHours().toString().padStart(2,'0') + ':' + 
+                             now.getUTCMinutes().toString().padStart(2,'0') + ' UTC';
+            document.getElementById('current-time').innerText = formatted;
+        }
+        updateTime();
+        setInterval(updateTime, 1000);
+    </script>
+</body>
+</html>
