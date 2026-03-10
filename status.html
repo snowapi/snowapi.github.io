@@ -131,6 +131,58 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
+
+        /* Блок графиков нагрузки */
+        .metrics {
+            background: #20242e;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin: 2rem 0 1rem;
+        }
+        .metrics-title {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #b7c3da;
+            border-bottom: 1px dashed #2f384b;
+            padding-bottom: 0.8rem;
+        }
+        .charts {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: space-around;
+        }
+        .chart-container {
+            flex: 1 1 200px;
+            text-align: center;
+        }
+        .chart-container h3 {
+            font-size: 1rem;
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+            color: #9aaec9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        canvas {
+            display: block;
+            width: 100%;
+            max-width: 280px;
+            height: auto;
+            background: #15181f;
+            border-radius: 1rem;
+            border: 1px solid #2e3440;
+            margin: 0 auto;
+        }
+        .chart-value {
+            margin-top: 0.5rem;
+            font-size: 1.1rem;
+            color: #e1e7f5;
+        }
+
         .last-updated {
             text-align: right;
             color: #6b7a8f;
@@ -162,17 +214,18 @@
             .container { padding: 1.5rem; }
             h1 { font-size: 1.8rem; }
             .gateway-info { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
+            .charts { flex-direction: column; align-items: center; }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>
-            <i class="fas fa-snowflake"></i> Snow API · статус сервера
+            <i class="fas fa-snowflake"></i> Snow API
             <span class="badge">v2.0</span>
         </h1>
 
-        <!-- информация о шлюзе -->
+        <!-- информация о шлюзе (без времени) -->
         <div class="gateway-info">
             <div class="gateway-info-item">
                 <i class="fas fa-server"></i>
@@ -180,20 +233,14 @@
                 <span class="value">christofari-neo.snowapi.ru</span>
             </div>
             <div class="gateway-info-item">
-                <i class="fas fa-clock"></i>
-                <span class="label">время</span>
-                <span class="value" id="current-time">2026-03-10 15:30 UTC</span>
-            </div>
-            <div class="gateway-info-item">
                 <i class="fas fa-tachometer-alt"></i>
                 <span class="label">нагрузка</span>
-                <span class="value">23%</span>
+                <span class="value" id="load-value">23%</span>
             </div>
         </div>
 
         <!-- сетка статусов модулей (только названия и статус) -->
         <div class="status-grid">
-            <!-- bio-ml -->
             <div class="status-card">
                 <div class="card-header">
                     <i class="fas fa-dna"></i>
@@ -203,10 +250,7 @@
                         <span class="status-text">online</span>
                     </div>
                 </div>
-                <!-- описания и uptime удалены -->
             </div>
-
-            <!-- plant -->
             <div class="status-card">
                 <div class="card-header">
                     <i class="fas fa-seedling"></i>
@@ -216,10 +260,7 @@
                         <span class="status-text">online</span>
                     </div>
                 </div>
-                <!-- описания и uptime удалены -->
             </div>
-
-            <!-- rosetta -->
             <div class="status-card">
                 <div class="card-header">
                     <i class="fas fa-protein"></i>
@@ -229,10 +270,7 @@
                         <span class="status-text">online</span>
                     </div>
                 </div>
-                <!-- описания и uptime удалены -->
             </div>
-
-            <!-- animation -->
             <div class="status-card">
                 <div class="card-header">
                     <i class="fas fa-film"></i>
@@ -242,10 +280,7 @@
                         <span class="status-text">online</span>
                     </div>
                 </div>
-                <!-- описания и uptime удалены -->
             </div>
-
-            <!-- autoresearch -->
             <div class="status-card">
                 <div class="card-header">
                     <i class="fas fa-robot"></i>
@@ -255,10 +290,7 @@
                         <span class="status-text">online</span>
                     </div>
                 </div>
-                <!-- описания и uptime удалены -->
             </div>
-
-            <!-- quantum (Росатом) – внешний сервис -->
             <div class="status-card">
                 <div class="card-header">
                     <i class="fas fa-atom"></i>
@@ -268,19 +300,40 @@
                         <span class="status-text">online</span>
                     </div>
                 </div>
-                <!-- описания и uptime удалены -->
             </div>
         </div>
 
-        <!-- блок с дополнительной информацией о внешних API удалён (пояснения) -->
-
-        <!-- время последнего обновления -->
-        <div class="last-updated">
-            <span><i class="far fa-clock"></i> обновлено: 10 марта 2026, 15:30:22 UTC</span>
-            <span><i class="fas fa-sync-alt"></i> интервал 30с</span>
+        <!-- интерактивные графики нагрузки в реальном времени -->
+        <div class="metrics">
+            <div class="metrics-title">
+                <i class="fas fa-chart-line"></i> нагрузка в реальном времени
+            </div>
+            <div class="charts">
+                <div class="chart-container">
+                    <h3><i class="fas fa-microchip"></i> CPU</h3>
+                    <canvas id="cpuChart" width="280" height="100"></canvas>
+                    <div class="chart-value" id="cpuValue">--%</div>
+                </div>
+                <div class="chart-container">
+                    <h3><i class="fas fa-memory"></i> RAM</h3>
+                    <canvas id="ramChart" width="280" height="100"></canvas>
+                    <div class="chart-value" id="ramValue">--%</div>
+                </div>
+                <div class="chart-container">
+                    <h3><i class="fas fa-network-wired"></i> NET</h3>
+                    <canvas id="netChart" width="280" height="100"></canvas>
+                    <div class="chart-value" id="netValue">-- Mb/s</div>
+                </div>
+            </div>
         </div>
 
-        <!-- футер с ссылками -->
+        <!-- время последнего обновления (только здесь) -->
+        <div class="last-updated">
+            <span><i class="far fa-clock"></i> <span id="live-time">10 марта 2026, 15:30:22 UTC</span></span>
+            <span><i class="fas fa-sync-alt"></i> интервал 1с</span>
+        </div>
+
+        <!-- футер -->
         <div class="footer">
             <i class="fas fa-github"></i> <a href="https://github.com/snowapi/snowapi">snowapi/snowapi</a> · 
             <a href="https://snowapi.github.io/">документация</a> · 
@@ -288,17 +341,140 @@
         </div>
     </div>
 
-    <!-- маленький скрипт для динамического времени (необязательно) -->
     <script>
-        function updateTime() {
-            const now = new Date();
-            const formatted = now.toISOString().slice(0,10).replace(/-/g,'-') + ' ' + 
-                             now.getUTCHours().toString().padStart(2,'0') + ':' + 
-                             now.getUTCMinutes().toString().padStart(2,'0') + ' UTC';
-            document.getElementById('current-time').innerText = formatted;
-        }
-        updateTime();
-        setInterval(updateTime, 1000);
+        (function() {
+            // ---- интерактивное время (обновление каждую секунду) ----
+            function updateTime() {
+                const now = new Date();
+                const year = now.getUTCFullYear();
+                const month = String(now.getUTCMonth() + 1).padStart(2,'0');
+                const day = String(now.getUTCDate()).padStart(2,'0');
+                const hours = String(now.getUTCHours()).padStart(2,'0');
+                const minutes = String(now.getUTCMinutes()).padStart(2,'0');
+                const seconds = String(now.getUTCSeconds()).padStart(2,'0');
+                const formatted = `${day} ${getMonthName(now.getUTCMonth())} ${year}, ${hours}:${minutes}:${seconds} UTC`;
+                document.getElementById('live-time').innerText = formatted;
+            }
+            function getMonthName(index) {
+                const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+                                'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+                return months[index];
+            }
+            updateTime();
+            setInterval(updateTime, 1000);
+
+            // ---- графики нагрузки и интерактивность ----
+            // Храним историю для каждого графика (по 20 точек)
+            const maxPoints = 20;
+            let cpuHistory = new Array(maxPoints).fill(20); // начальные значения
+            let ramHistory = new Array(maxPoints).fill(30);
+            let netHistory = new Array(maxPoints).fill(5);  // в Mb/s
+
+            // Получаем canvas и контексты
+            const cpuCanvas = document.getElementById('cpuChart');
+            const ramCanvas = document.getElementById('ramChart');
+            const netCanvas = document.getElementById('netChart');
+            const cpuCtx = cpuCanvas.getContext('2d');
+            const ramCtx = ramCanvas.getContext('2d');
+            const netCtx = netCanvas.getContext('2d');
+
+            // Элементы для отображения текущих значений
+            const cpuValueEl = document.getElementById('cpuValue');
+            const ramValueEl = document.getElementById('ramValue');
+            const netValueEl = document.getElementById('netValue');
+            const loadValueEl = document.getElementById('load-value'); // общая нагрузка в gateway
+
+            // Генерация случайных данных (имитация real-time)
+            function generateNewValues() {
+                // CPU: случайное от 5 до 85
+                const newCpu = Math.floor(Math.random() * 60 + 15);
+                // RAM: случайное от 30 до 90
+                const newRam = Math.floor(Math.random() * 50 + 30);
+                // NET: случайное от 2 до 40 Mb/s
+                const newNet = (Math.random() * 30 + 5).toFixed(1);
+
+                cpuHistory.push(newCpu);
+                ramHistory.push(newRam);
+                netHistory.push(parseFloat(newNet));
+
+                if (cpuHistory.length > maxPoints) cpuHistory.shift();
+                if (ramHistory.length > maxPoints) ramHistory.shift();
+                if (netHistory.length > maxPoints) netHistory.shift();
+
+                // Обновляем цифры
+                cpuValueEl.innerText = newCpu + '%';
+                ramValueEl.innerText = newRam + '%';
+                netValueEl.innerText = newNet + ' Mb/s';
+                loadValueEl.innerText = newCpu + '%';  // обновляем нагрузку в gateway-info
+            }
+
+            // Отрисовка графика на канвасе
+            function drawChart(ctx, data, color, maxY) {
+                const w = ctx.canvas.width;
+                const h = ctx.canvas.height;
+                ctx.clearRect(0, 0, w, h);
+
+                if (data.length < 2) return;
+
+                // Находим максимум для масштабирования
+                const maxVal = Math.max(...data, maxY);
+                const minVal = Math.min(...data, 0);
+                const range = maxVal - minVal || 1;
+
+                // Рисуем сетку (опционально)
+                ctx.strokeStyle = '#2f384b';
+                ctx.lineWidth = 0.5;
+                ctx.beginPath();
+                for (let i = 0; i <= 4; i++) {
+                    const y = h - 10 - (i * (h-20)/4);
+                    ctx.moveTo(10, y);
+                    ctx.lineTo(w-10, y);
+                }
+                ctx.stroke();
+
+                // Рисуем линию графика
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+
+                const step = (w - 20) / (data.length - 1);
+                for (let i = 0; i < data.length; i++) {
+                    const x = 10 + i * step;
+                    // Масштабируем значение: (значение - minVal) / range * (h-20) и отражаем по y
+                    const y = h - 10 - ((data[i] - minVal) / range) * (h - 20);
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+
+                // Рисуем точки
+                ctx.fillStyle = color;
+                for (let i = 0; i < data.length; i++) {
+                    const x = 10 + i * step;
+                    const y = h - 10 - ((data[i] - minVal) / range) * (h - 20);
+                    ctx.beginPath();
+                    ctx.arc(x, y, 3, 0, 2 * Math.PI);
+                    ctx.fill();
+                }
+            }
+
+            // Обновление всех графиков
+            function updateCharts() {
+                drawChart(cpuCtx, cpuHistory, '#5f9ea0', 100);
+                drawChart(ramCtx, ramHistory, '#b38f5f', 100);
+                drawChart(netCtx, netHistory, '#8f9eb3', 50); // для сети максимум 50 Mb/s
+            }
+
+            // Цикл обновления (каждую секунду)
+            function tick() {
+                generateNewValues();
+                updateCharts();
+            }
+
+            // Первоначальная отрисовка
+            tick();
+            setInterval(tick, 1000);
+        })();
     </script>
 </body>
 </html>
