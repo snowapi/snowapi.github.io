@@ -131,23 +131,6 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        .card-desc {
-            color: #aab3c4;
-            font-size: 0.9rem;
-            border-top: 1px dashed #2f384b;
-            padding-top: 0.8rem;
-            margin-top: 0.2rem;
-        }
-        .uptime {
-            font-size: 0.85rem;
-            color: #8892a6;
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-        }
-        .uptime i {
-            font-size: 0.9rem;
-        }
         .last-updated {
             text-align: right;
             color: #6b7a8f;
@@ -208,7 +191,7 @@
             </div>
         </div>
 
-        <!-- сетка статусов модулей -->
+        <!-- сетка статусов модулей (только названия и статус) -->
         <div class="status-grid">
             <!-- bio-ml -->
             <div class="status-card">
@@ -220,12 +203,7 @@
                         <span class="status-text">online</span>
                     </div>
                 </div>
-                <div class="card-desc">
-                    DeepFold‑PLM · DeepMol · nanoGPT‑Bio
-                </div>
-                <div class="uptime">
-                    <i class="fas fa-arrow-up"></i> uptime 14d · 124ms
-                </div>
+                <!-- описания и uptime удалены -->
             </div>
 
             <!-- plant -->
@@ -238,12 +216,7 @@
                         <span class="status-text">online</span>
                     </div>
                 </div>
-                <div class="card-desc">
-                    DeepPlant · OpenAlea · L‑systems
-                </div>
-                <div class="uptime">
-                    <i class="fas fa-arrow-up"></i> uptime 7d · 98ms
-                </div>
+                <!-- описания и uptime удалены -->
             </div>
 
             <!-- rosetta -->
@@ -256,12 +229,7 @@
                         <span class="status-text">online</span>
                     </div>
                 </div>
-                <div class="card-desc">
-                    Rosetta · фолдинг · дизайн · скоринг
-                </div>
-                <div class="uptime">
-                    <i class="fas fa-arrow-up"></i> uptime 30d · 350ms
-                </div>
+                <!-- описания и uptime удалены -->
             </div>
 
             <!-- animation -->
@@ -274,12 +242,7 @@
                         <span class="status-text">online</span>
                     </div>
                 </div>
-                <div class="card-desc">
-                    Science in Motion · рендер · атомарные анимации
-                </div>
-                <div class="uptime">
-                    <i class="fas fa-arrow-up"></i> uptime 5d · 210ms
-                </div>
+                <!-- описания и uptime удалены -->
             </div>
 
             <!-- autoresearch -->
@@ -292,12 +255,7 @@
                         <span class="status-text">online</span>
                     </div>
                 </div>
-                <div class="card-desc">
-                    ИИ‑исследователь · автономные эксперименты
-                </div>
-                <div class="uptime">
-                    <i class="fas fa-arrow-up"></i> uptime 2d · 560ms
-                </div>
+                <!-- описания и uptime удалены -->
             </div>
 
             <!-- quantum (Росатом) – внешний сервис -->
@@ -310,23 +268,11 @@
                         <span class="status-text">online</span>
                     </div>
                 </div>
-                <div class="card-desc">
-                    Росатом · QPU · аннилер · ионные ловушки
-                </div>
-                <div class="uptime">
-                    <i class="fas fa-arrow-up"></i> доступ 100% · 1.2s
-                </div>
+                <!-- описания и uptime удалены -->
             </div>
         </div>
 
-        <!-- дополнительная информация о внешних API -->
-        <div style="background: #20242e; border-radius: 1rem; padding: 1rem 1.5rem; margin-top: 1rem;">
-            <div style="display: flex; gap: 2rem; flex-wrap: wrap; align-items: center;">
-                <span><i class="fas fa-check-circle" style="color: #5f9ea0;"></i> VK Play API: активен</span>
-                <span><i class="fas fa-check-circle" style="color: #5f9ea0;"></i> DeepFold‑PLM public API: 214ms</span>
-                <span><i class="fas fa-exclamation-triangle" style="color: #c9a45f;"></i> Росатом резерв: hot standby</span>
-            </div>
-        </div>
+        <!-- блок с дополнительной информацией о внешних API удалён (пояснения) -->
 
         <!-- время последнего обновления -->
         <div class="last-updated">
